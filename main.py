@@ -1,7 +1,6 @@
 import asyncio
 import socket
 import subprocess
-import BluetoothAgent
 import time
 
 import PyOBEX
@@ -9,57 +8,33 @@ import bluetooth
 from PyOBEX.client import BrowserClient
 from PyOBEX.server import Server, BrowserServer
 from bleak import BleakClient
+import aioconsole
 
 galaxy_buds = "64:03:7F:9D:45:18"
 jbl_clip_4 = "F8:5C:7E:3A:D0:9F"
 
 this_device_address = "f8:63:3f:31:38:09"
 
-# async def main():
-#
-
-# device = device_where_name("Galaxy Buds+ (4518)")
-#
-# print("services= ", services)
-# port = services["port"]
-# print("Port= ", port)
-# # # port = bluetooth.find_service(address=galaxy_buds)
-
-# server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-# server_sock.connect((samsung_phone, 4))
-# server_sock.bind((this_device_address, bluetooth.PORT_ANY))
-
-# BrowserServer.start_service(bluetooth.RFCOMM)
-
-# sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-#
-# bd_addr = "01:23:45:67:89:AB"
-# port = 0x1001
-#
-# sock.connect((samsung_phone, 3))
-#
-# sock.send("hello!!")
-#
-# sock.close()
-
-# server_sock.close()
 samsung_phone = "18:4E:16:26:CB:C6"
 
 
-def connect():
+async def connect():
     client_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    bluetooth.
+    subprocess.call("kill -9 `pidof bluetooth-agent`", shell=True)
+    passcode = "1111"
+    subprocess.call("bluetooth-agent " + passcode + " &", shell=True)
+
     port = 6
     try:
-        client_socket.p
-        await client_socket.connect((samsung_phone, port))
-        passkey = input("Enter passkey: ")
-        status = subprocess.call("bluetooth-agent " + passkey + " &", shell=True)
+        client_socket.connect((samsung_phone, port))
 
+        # line = await aioconsole.ainput('Is this your line? ')
+        print("cos")
+        # await task
         print("Connected to phone")
 
         data_to_send = "Hello, phone!"
-        client_socket.send(data_to_send)
+        # client_socket.send(data_to_send)
 
         received_data = client_socket.recv(1024)
         print("Received data: ", received_data.decode('utf-8'))
@@ -71,7 +46,7 @@ def connect():
 
 
 def main():
-    connect()
+    asyncio.run(connect())
 
 
 
